@@ -42,9 +42,12 @@ public class NetworkService {
         }
     }
 
+    /**
+     * פונקציה השולפת את תמונת המבוך עם הפרמטרים של הגודל בצורה מפורשת
+     */
     public static BufferedImage getMazeImage(int width, int height) {
         try {
-
+            // שולחים את הפרמטרים בצורה נקייה ומפורשת לשרת
             String urlWithParams = MAZE_IMAGE_URL + "?width=" + width + "&height=" + height;
             URL url = new URL(urlWithParams);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -54,7 +57,7 @@ public class NetworkService {
                 return ImageIO.read(conn.getInputStream());
             } else {
                 System.out.println("השרת החזיר קוד שגיאה: " + conn.getResponseCode() + " - מנסה לטעון ללא פרמטרים");
-
+                // ניסיון גיבוי במקרה והשרת דוחה את הפרמטרים
                 URL fallbackUrl = new URL(MAZE_IMAGE_URL);
                 HttpURLConnection fallbackConn = (HttpURLConnection) fallbackUrl.openConnection();
                 return ImageIO.read(fallbackConn.getInputStream());

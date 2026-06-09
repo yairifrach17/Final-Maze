@@ -91,6 +91,7 @@ public class MainFrame extends JFrame {
                 return;
             }
 
+            // לוקחים את הממדים האמיתיים של מה שהתקבל לעיבוד הפיקסלים
             int actualWidth = mazeImg.getWidth();
             int actualHeight = mazeImg.getHeight();
 
@@ -101,7 +102,7 @@ public class MainFrame extends JFrame {
 
                 centerPanel.removeAll();
                 mazePanel = new MazePanel(currentMaze, currentConfig);
-                centerPanel.add(mazePanel, BorderLayout.CENTER);
+                centerPanel.add(mazePanel, BorderLayout.CENTER); // ממלא את כל שטח הפאנל
                 centerPanel.revalidate();
                 centerPanel.repaint();
 

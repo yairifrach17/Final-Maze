@@ -6,7 +6,7 @@ import java.util.List;
 public class MazeModel {
     private final int width;
     private final int height;
-    private final boolean[][] isWall; // true = קיר, false = מעבר
+    private final boolean[][] isWall;
     private List<Point> solutionPath;
 
     public MazeModel(BufferedImage mazeImage, int width, int height) {
@@ -20,32 +20,26 @@ public class MazeModel {
         }
     }
 
-    /**
-     * התיקון: סריקה נכונה של פיקסלי התמונה לפי קורדינטות X ו-Y
-     */
     private void decodeImage(BufferedImage img) {
         int imgWidth = img.getWidth();
         int imgHeight = img.getHeight();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                // הגנה מפני חריגה מגבולות התמונה האמיתית שהגיעה מהשרת
                 if (x < imgWidth && y < imgHeight) {
                     int rgb = img.getRGB(x, y);
 
-                    // חילוץ רכיבי הצבע
                     int red = (rgb >> 16) & 0xFF;
                     int green = (rgb >> 8) & 0xFF;
                     int blue = rgb & 0xFF;
 
-                    // פיקסל לבן הוא מעבר, כל השאר קיר
                     if (red == 255 && green == 255 && blue == 255) {
                         isWall[x][y] = false;
                     } else {
                         isWall[x][y] = true;
                     }
                 } else {
-                    isWall[x][y] = true; // ברירת מחדל מחוץ לתמונה - קיר
+                    isWall[x][y] = true;
                 }
             }
         }

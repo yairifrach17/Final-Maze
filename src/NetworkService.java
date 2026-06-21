@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NetworkService {
 
@@ -42,12 +44,9 @@ public class NetworkService {
         }
     }
 
-    /**
-     * פונקציה השולפת את תמונת המבוך עם הפרמטרים של הגודל בצורה מפורשת
-     */
     public static BufferedImage getMazeImage(int width, int height) {
         try {
-            // שולחים את הפרמטרים בצורה נקייה ומפורשת לשרת
+
             String urlWithParams = MAZE_IMAGE_URL + "?width=" + width + "&height=" + height;
             URL url = new URL(urlWithParams);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -57,7 +56,7 @@ public class NetworkService {
                 return ImageIO.read(conn.getInputStream());
             } else {
                 System.out.println("השרת החזיר קוד שגיאה: " + conn.getResponseCode() + " - מנסה לטעון ללא פרמטרים");
-                // ניסיון גיבוי במקרה והשרת דוחה את הפרמטרים
+
                 URL fallbackUrl = new URL(MAZE_IMAGE_URL);
                 HttpURLConnection fallbackConn = (HttpURLConnection) fallbackUrl.openConnection();
                 return ImageIO.read(fallbackConn.getInputStream());
@@ -69,21 +68,20 @@ public class NetworkService {
     }
 
     private static String parseJsonString(String json, String key) {
-        int keyIndex = json.indexOf("\"" + key + "\"");
-        if (keyIndex == -1) return "";
-        int startIndex = json.indexOf("\"", keyIndex + key.length() + 2) + 1;
-        int endIndex = json.indexOf("\"", startIndex);
-        return json.substring(startIndex, endIndex);
+        Pattern pattern = Pattern.compile("\"" + key + "\"[\\s]*:[\\s]*\"([^\"]*)\"");
+        Matcher matcher = pattern.matcher(json);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private static int parseJsonInt(String json, String key) {
-        int keyIndex = json.indexOf("\"" + key + "\"");
-        if (keyIndex == -1) return 0;
-        int startIndex = json.indexOf(":", keyIndex) + 1;
-        int endIndex = json.indexOf(",", startIndex);
-        if (endIndex == -1) {
-            endIndex = json.indexOf("}", startIndex);
+        Pattern pattern = Pattern.compile("\"" + key + "\"[\\s]*:[\\s]*([0-9]+)");
+        Matcher matcher = pattern.matcher(json);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
         }
-        return Integer.parseInt(json.substring(startIndex, endIndex).trim());
+        return 0;
     }
 }

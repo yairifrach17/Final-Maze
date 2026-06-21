@@ -91,7 +91,6 @@ public class MainFrame extends JFrame {
                 return;
             }
 
-            // לוקחים את הממדים האמיתיים של מה שהתקבל לעיבוד הפיקסלים
             int actualWidth = mazeImg.getWidth();
             int actualHeight = mazeImg.getHeight();
 
@@ -141,6 +140,6 @@ public class MainFrame extends JFrame {
                 return val;
             }
         } catch (NumberFormatException e) { }
-        return 30; // ברירת מחדל
+        return 30;
     }
 }

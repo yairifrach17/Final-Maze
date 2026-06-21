@@ -8,7 +8,6 @@ public class MazeSolver {
         int height = maze.getHeight();
         List<Point> path = new ArrayList<>();
 
-
         Point start = new Point(0, 0);
         Point end = new Point(width - 1, height - 1);
 
@@ -17,9 +16,10 @@ public class MazeSolver {
             return path;
         }
 
-
         Queue<Point> queue = new LinkedList<>();
         boolean[][] visited = new boolean[width][height];
+
+
         Point[][] parents = new Point[width][height];
 
         queue.add(start);
@@ -41,18 +41,20 @@ public class MazeSolver {
             for (int i = 0; i < 4; i++) {
                 int nextX = current.x + dX[i];
                 int nextY = current.y + dY[i];
-                Point nextPoint = new Point(nextX, nextY);
 
                 if (nextX >= 0 && nextX < width && nextY >= 0 && nextY < height) {
                     if (!maze.isWall(nextX, nextY) && !visited[nextX][nextY]) {
                         visited[nextX][nextY] = true;
+
+
                         parents[nextX][nextY] = current;
-                        queue.add(nextPoint);
+
+
+                        queue.add(new Point(nextX, nextY));
                     }
                 }
             }
         }
-
 
         if (found) {
             Point curr = end;

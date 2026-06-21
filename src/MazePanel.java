@@ -23,13 +23,11 @@ public class MazePanel extends JPanel {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
-        // ביטול פילטרים שגורמים לטשטוש בקירות
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
         int width = mazeModel.getWidth();
         int height = mazeModel.getHeight();
 
-        // השארת מרווח ביטחון נקי של 40 פיקסלים מכל צד
         int padding = 40;
         int availableWidth = getWidth() - (padding * 2);
         int availableHeight = getHeight() - (padding * 2);
@@ -37,7 +35,6 @@ public class MazePanel extends JPanel {
         if (availableWidth < 10) availableWidth = 10;
         if (availableHeight < 10) availableHeight = 10;
 
-        // חישוב מקדם הכיווץ המדויק כשבר עשרוני
         double scaleX = (double) availableWidth / width;
         double scaleY = (double) availableHeight / height;
         double scale = Math.min(scaleX, scaleY);
@@ -46,7 +43,6 @@ public class MazePanel extends JPanel {
             scale = 1.0;
         }
 
-        // חישוב המרכוז האוטומטי בתוך ה-Panel
         int offsetX = (getWidth() - (int) (width * scale)) / 2;
         int offsetY = (getHeight() - (int) (height * scale)) / 2;
 
@@ -54,7 +50,7 @@ public class MazePanel extends JPanel {
         Color gridColor = Color.decode(config.gridColor());
         Color pathColor = Color.decode(config.pathColor());
 
-        // 1. ציור קירות ומעברים בשיטת Pixel-Perfect
+
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int x1 = offsetX + (int) (x * scale);
@@ -75,13 +71,12 @@ public class MazePanel extends JPanel {
             }
         }
 
-        // 2. התיקון המנצח: ציור נתיב הפתרון כקו צינור עבה ורציף בין מרכזי התאים
+
         if (!animatedPath.isEmpty()) {
-            // הפעלת החלקה ספציפית לקו הפתרון כדי שייראה מעוגל ויפה
+
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setColor(pathColor);
 
-            // עובי דינמי: לפחות 3.5 פיקסלים כדי שייראה עבה וברור תמיד, או 70% מגודל התא במבוכים קטנים
             float strokeWidth = Math.max(3.5f, (float) (scale * 0.7));
             g2d.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
@@ -89,18 +84,15 @@ public class MazePanel extends JPanel {
                 Point p1 = animatedPath.get(i);
                 Point p2 = animatedPath.get(i + 1);
 
-                // חישוב מרכז תא 1
                 int x1 = offsetX + (int) (p1.x * scale) + (int) (scale / 2);
                 int y1 = offsetY + (int) (p1.y * scale) + (int) (scale / 2);
 
-                // חישוב מרכז תא 2
                 int x2 = offsetX + (int) (p2.x * scale) + (int) (scale / 2);
                 int y2 = offsetY + (int)(p2.y * scale) + (int) (scale / 2);
 
                 g2d.drawLine(x1, y1, x2, y2);
             }
 
-            // מקרה קצה: אם יש רק נקודה אחת בנתיב
             if (animatedPath.size() == 1) {
                 Point p = animatedPath.get(0);
                 int x = offsetX + (int) (p.x * scale) + (int) (scale / 2);
@@ -108,11 +100,9 @@ public class MazePanel extends JPanel {
                 g2d.drawLine(x, y, x, y);
             }
 
-            // החזרת מצב ההחלקה למצב כבוי בשביל שאר הרכיבים
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         }
 
-        // 3. ציור קווי רשת (רק אם התאים גדולים מ-4 פיקסלים)
         if (config.drawGrid() && scale > 4.0) {
             g2d.setColor(gridColor);
             g2d.setStroke(new BasicStroke(1.0f));
